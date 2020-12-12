@@ -1,6 +1,6 @@
 # mol
 
-mol is library to realizing actor model based applications with Go.
+mol is library to realize actor model based applications with Go.
 
 Influenced by Erlang and Akka
 
