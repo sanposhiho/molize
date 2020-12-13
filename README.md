@@ -1,6 +1,6 @@
-# mol
+# molize
 
-mol is library to realize actor model based applications with Go.
+molize is library to realize actor model based applications with Go.
 
 Inspired by Erlang and Akka
 
