@@ -23,6 +23,9 @@ func NewActor(parent *Actor) *Actor {
 		children:           map[string]*Actor{},
 		address:            uuid.New().String(),
 	}
+	if parent != nil {
+		parent.AddChild(a)
+	}
 
 	a.Run()
 
@@ -44,6 +47,7 @@ func (a *Actor) Run() {
 }
 
 func (a *Actor) processLoop() {
+	fmt.Printf("start: %s\n", a.address)
 	defer func() {
 		a.notifyPanic()
 		if err := recover(); err != nil {
@@ -53,19 +57,25 @@ func (a *Actor) processLoop() {
 	for {
 		select {
 		case message := <-a.mailbox:
-			fmt.Print(message)
+			fmt.Printf("message received: %s\n", message)
+			if message == "This is crush message!" {
+				panic("crush!")
+			}
 		case address := <-a.childPanicReceiver:
 			a.receiveChildPanic(address)
 		}
-
-		return
 	}
 }
 
 func (a *Actor) notifyPanic() {
-	a.parent.childPanicReceiver <- a.address
+	if a.parent != nil {
+		a.parent.childPanicReceiver <- a.address
+	} else {
+		fmt.Print("no")
+	}
 }
 
 func (a *Actor) receiveChildPanic(childAddress string) {
+	fmt.Printf("recover child: %s\n", a.address)
 	a.children[childAddress].Run()
 }
